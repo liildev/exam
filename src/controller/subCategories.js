@@ -15,7 +15,7 @@ const GET = (req, res, next) => {
       res.status(200).send({
         status: 200,
         message: "OK",
-        data: subCategory,
+        data: subCategory || [],
       });
     }
 
@@ -31,7 +31,7 @@ const GET = (req, res, next) => {
     res.status(200).send({
       status: 200,
       message: "OK",
-      data: subCategory,
+      data: subCategory || [],
     });
   } catch (error) {
     return next(new InternalServerError(500, error.message));
@@ -42,20 +42,21 @@ const POST = (req, res, next) => {
   try {
     let subCategories = read("subCategories");
 
-    let newSubCotegory = {
+    let newSubCategory = {
       sub_category_id: subCategories.length
         ? subCategories.at(-1).sub_category_id + 1
         : 1,
       sub_category_name: req.body.subCategoryName,
       category_id: req.body.categoryId,
     };
-    subCategories.push(newSubCotegory);
-    write("subCategories", subCategories);
+    subCategories.push(newSubCategory);
+    console.log(newSubCategory);
+    // write("subCategories", subCategories);
 
     res.status(201).send({
       status: 201,
       message: "New subcategory added",
-      data: newSubCotegory,
+      data: newSubCategory || [],
     });
   } catch (error) {
     return next(new InternalServerError(500, error.message));
@@ -122,7 +123,7 @@ const DELETE = (req, res, next) => {
 
     res.status(200).json({
       status: 200,
-      message: "Subategory deleted",
+      message: "Subcategory deleted",
       data: subCategory,
     });
   } catch (error) {
@@ -134,5 +135,5 @@ export default {
   GET,
   POST,
   PUT,
-  DELETE
+  DELETE,
 };

@@ -54,5 +54,13 @@
         "color": "black",
         "price": "1140",
         "model": "apple"
+    },
+    {
+        "product_id": 8,
+        "product_name": "redmi note 6 pro",
+        "sub_category_id": 1,
+        "color": "black",
+        "price": "140",
+        "model": "redmi"
     }
 ]

@@ -9,13 +9,8 @@ const GET = (req, res, next) => {
     let { categoryId, model, subCategoryId, color } = req.query;
     let { productId } = req.params;
 
-    if(subCategoryId) {
-      let product = products.filter((product) => product.sub_category_id == subCategoryId);
-      res.status(200).send({
-        status: 200,
-        message: "OK",
-        data: product,
-      });
+    if(req.url == '/products') {
+      res.status(200).send('ok')
     }
 
     if (productId) {
@@ -23,7 +18,7 @@ const GET = (req, res, next) => {
       res.status(200).send({
         status: 200,
         message: "OK",
-        data: product,
+        data: product || [],
       });
     }
 
@@ -35,11 +30,12 @@ const GET = (req, res, next) => {
       res.status(200).send({
         status: 200,
         message: "OK",
-        data: category,
+        data: category || [],
       });
     }
 
     let data = products.filter((product) => {
+      let bySubCategoryId = subCategoryId ? product.sub_category_id == subCategoryId : true
       let byModel =
         model && subCategoryId
           ? product.sub_category_id == subCategoryId && product.model == model
@@ -49,13 +45,13 @@ const GET = (req, res, next) => {
           ? product.color == color && product.model == model
           : true;
 
-      return byModel && byColor;
+      return bySubCategoryId && byModel && byColor;
     });
 
     res.status(200).send({
       status: 200,
       message: "OK",
-      data: data,
+      data: data || [],
     });
   } catch (error) {
     return next(new InternalServerError(500, error.product));
@@ -66,12 +62,12 @@ const POST = (req, res, next) => {
   try {
     let products = read("products");
 
-    let { model, sub_category_id, product_name, color, price } = req.body;
+    let { model, subCategoryId, productName, color, price } = req.body;
 
     let newProduct = {
       product_id: products.length ? products.at(-1).product_id + 1 : 1,
-      product_name: product_name,
-      sub_category_id: sub_category_id,
+      product_name: productName,
+      sub_category_id: subCategoryId,
       color: color,
       price: price,
       model: model,
